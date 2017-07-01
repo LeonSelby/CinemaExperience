@@ -139,6 +139,7 @@ static String askForData(String message){
         System.out.println(message);
         return TakeInput.takeNextLine();
 }
+static void test() {}
 //static String feedbackMessage(String message, String variableToOutput){
 //    System.out.println(message + variableToOutput);
 //
