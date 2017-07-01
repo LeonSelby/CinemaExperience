@@ -138,11 +138,11 @@ public class PartyDeclaration {
 static String askForData(String message){
         System.out.println(message);
         return TakeInput.takeNextLine();
-    }
-    static String feedbackMessage(String message, String variableToOutput){
-        System.out.println(message + variableToOutput);
-
-    }
+}
+//static String feedbackMessage(String message, String variableToOutput){
+//    System.out.println(message + variableToOutput);
+//
+//}
 
     static String studentQuestion() {
         String q = "How many of your party are students?";

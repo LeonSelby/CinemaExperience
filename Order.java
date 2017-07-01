@@ -13,8 +13,8 @@ int childrenCount;
         childrenCount += amount;
     }
 
-    String orderDetails()
-    {
-        return "Children : " + childrenCount + "Adult:" + adultCount;
-    }
+//    String orderDetails()
+//    {
+//        return "Children : " + childrenCount + "Adult:" + adultCount;
+//    }
 }
