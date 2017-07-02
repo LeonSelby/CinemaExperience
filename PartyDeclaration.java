@@ -146,9 +146,11 @@ class PartyDeclaration {
             TakeInput.questionOffers(o, "students");
             TakeInput.questionOffers(o, "elderly");
             updateStandard(o);
+            screen1.setCustomers(o.getPartySize());
             return o.announceFinalPrice();
         }
         updateStandard(o);
+       screen1.setCustomers(o.getPartySize());
         return o.announceFinalPrice();
     }
 

@@ -6,10 +6,7 @@ public class Main {
         Greeting.greetCustomer();
         System.out.println("\n" + DaySelection.dayAnnouncement());
         System.out.println("\n" + FilmSelection.filmAnnouncer());
-        System.out.println(PartyDeclaration.partyConfig());
-
-
-
+        System.out.println("\n" + PartyDeclaration.partyConfig());
         Greeting.thankCustomer();
     }
 }

@@ -60,10 +60,9 @@ class Order {
         standardCount += amount;
     }
 
-    String orderDetails() {
-        return "Standard: " + standardCount + ", " + "Children: " + childrenCount + ", " + "Student: " +
-                studentCount + ", and Elderly: " + elderlyCount + ".";
-    }
+    public int totalCustomers(){
+        return getPartySize();
+   }
 
     private int finalPriceDet() {
         int temp;
@@ -76,8 +75,6 @@ class Order {
     }
 
     private int priceFinal() {
-        System.out.println("Standard: " + standardCount + ", " + "Children: " + childrenCount + ", " + "Student: " +
-                studentCount + ", and Elderly: " + elderlyCount + ".");
         return (childrenCount * 4) + (studentCount * 6) + (elderlyCount * 6) + (8 * standardCount);
     }
 
@@ -86,8 +83,6 @@ class Order {
     }
 
     String announceFinalPrice() {
-        System.out.println("Standard: " + standardCount + ", " + "Children: " + childrenCount + ", " + "Student: " +
-                studentCount + ", and Elderly: " + elderlyCount + ".");
         return "Your total cost for this visit will be £" + finalPriceDet() + ".";
     }
 
