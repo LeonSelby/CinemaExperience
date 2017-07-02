@@ -6,6 +6,7 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 class TakeInput {
+    static Scanner sc = new Scanner(System.in);
 
     //Questions
 
@@ -89,7 +90,6 @@ class TakeInput {
     } // returns "how many elderly?"
 
     //Scanners
-    static Scanner sc = new Scanner(System.in);
 
     static String takeNextLine() {
         return sc.nextLine();

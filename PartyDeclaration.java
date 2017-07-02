@@ -138,7 +138,7 @@ class PartyDeclaration {
 //        return o.getElderlyCount();
 //    }//returns number of elderly that have been assigned
 
-    static String partyConfig() {
+   static String partyConfig() {
         String offerAnswer = partyAnnouncement();
         if (offerAnswer.contains("Yes")) {
             adjustRemainingSeats(o);
