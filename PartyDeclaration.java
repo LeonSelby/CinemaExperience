@@ -2,65 +2,51 @@ package com.leonselby.test.CinemaExperience;
 
 import java.util.InputMismatchException;
 
-public class PartyDeclaration {
+class PartyDeclaration {
 
-    static MovieScreening screen1 = new MovieScreening();
-    static int assignedSeating;
-    static int partySize;
-    static int remainingSeatingForParty;
-    static int children;
-    static int students;
-    static int elderly;
-    static int standardCustomers;
-    static String totalCosting;
+    private static MovieScreening screen1 = new MovieScreening();
+    private static Order o = new Order();
 
-   static int priceFinalWed = (children * 2) + (students * 4) + (elderly * 4) + (6 * standardCustomers);
-
-    public static int askForPartySize() {
+    private static int askForPartySize() {
         System.out.println("How many people are in your party?");
         return TakeInput.takeNextInt();
     } // Produces INT as party size.
 
-    public static int partyAssignedOriginal(int input) throws InputMismatchException {
+    private static int partyAssignedOriginal() throws InputMismatchException {
         int requestedSeats;
-        requestedSeats = input;
-
+        requestedSeats = askForPartySize();
         int assignedSeats = 0;
         try {
-            if (requestedSeats <= (screen1.getSeats() - screen1.getCustomers() - assignedSeats)) {
+            if (requestedSeats <= (screen1.getSeats() - screen1.getCustomers())) {
                 assignedSeats = requestedSeats;
-                assignedSeating = requestedSeats;
             } else {
-
                 handleTooMany();
                 assignedSeats = 0;
-                assignedSeating = 0;
             }
         } catch (InputMismatchException ime) {
             requestedSeats = askForPartySize();
         }
         return assignedSeats;
-    } //Takes ask and checks it
+    } //Takes ask and checks if room
 
-
-    static String partyAnnouncer() {
-        int temp = partyAssignedOriginal(askForPartySize());
+    private static String partyAnnouncer() {
+        int temp = partyAssignedOriginal();
         String tmp;
         if (temp == 0) {
-            temp = partyAssignedOriginal(askForPartySize());
+            temp = partyAssignedOriginal();
         }
         tmp = "You have been assigned " + temp + " seat(s).";
-        partySize = temp;
+        o.setPartySize(temp);
+        adjustRemainingSeats(o);
         return tmp;
-    } //Includes above two, checks for 0
+    } //Includes above two, checks for 0, adds PartySize to order
 
-    public static String partyComposition() {
+    private static String partyComposition() {
         System.out.println(partyAnnouncer());
         System.out.println("\nWe have discounted prices for Children, Students, and the elderly.");
         partyRequest();
         String tmp = "";
         boolean answerNotGiven = true;
-
         while (answerNotGiven) {
             switch (TakeInput.takeNextLine().toLowerCase()) {
                 case "yes":
@@ -73,7 +59,6 @@ public class PartyDeclaration {
                     tmp = "No";
                     answerNotGiven = false;
                     break;
-//                case "0":
                 default:
                     incorrectEntry();
                     partyRequest();
@@ -81,203 +66,128 @@ public class PartyDeclaration {
         }
         System.out.println("You have selected " + tmp + ".");
         return tmp;
-    } // Printing error message every time???
+    } // Asks for Party Size, returns answer to offers
 
-    public static String partyAnnouncement() {
+    private static String partyAnnouncement() {
         return "You have selected " + partyComposition() + ".";
-    } // line for y/n
+    }
 
+    private static String childrenQuestion() {
+        return "How many children are in your party?";
 
-    static String childrenQuestion() {
-        String q = "How many children are in your party?";
-        return q;
+    }//returns "how many children?"
 
-    }//Scans partyAnnouncement for yes
+    private static int childrenAnswer() {
 
-    static int childrenAnswer() {
-        Order o =new Order();
-
-        int requestedChildren = 0;
-        int assignedChildren = 0;
-        String tmp = childrenQuestion();
-        System.out.println(tmp);
-        requestedChildren = TakeInput.takeNextInt();
-
-
-        if (requestedChildren == 0) {
-            assignedChildren = requestedChildren;
-            remainingSeatingForParty = assignedSeating - assignedChildren;
-            children = assignedChildren;
-            o.addChildren(children);
-        } else if (requestedChildren < assignedSeating - remainingSeatingForParty) {
-            assignedChildren = requestedChildren;
-            remainingSeatingForParty = assignedSeating - assignedChildren;
-            children = assignedChildren;
-        } else if (requestedChildren == assignedSeating - remainingSeatingForParty) {
-            assignedChildren = requestedChildren;
-            remainingSeatingForParty = assignedSeating - assignedChildren;
-            children = assignedChildren;
-            if (DaySelection.confirmedDay.equalsIgnoreCase("Wednesday")) {
-                System.out.println("pricefinalwed is "+finalPriceDet() );
-                totalCosting = "Your total cost will be £" + finalPriceDet() + ".";
-                System.out.println("You have been assigned " + assignedChildren + " child ticket(s).");
-                Greeting.thankEnd();
-            }
-
-            totalCosting = "Your total cost will be £" + priceFinal() + ".";
-            System.out.println("You have been assigned " + assignedChildren + " child ticket(s).");
+        System.out.println(childrenQuestion());
+        int requested = TakeInput.takeNextInt();
+        System.out.println(requested);
+        if (requested < o.getSeatsRemaining()) {
+            assignReqToAssigned(o, "children", requested);
+            adjustRemainingSeats(o);
+        } else if (requested == o.getSeatsRemaining()) {
+            assignReqToAssigned(o, "children", requested);
+            adjustRemainingSeats(o);
+            System.out.println(o.announceFinalPrice());
             Greeting.thankEnd();
         } else {
-            remainingSeatingForParty = assignedSeating - assignedChildren;
+            adjustRemainingSeats(o);
             overPartySize();
-            requestedChildren = TakeInput.takeNextInt();
+            requested = TakeInput.takeNextInt();
         }
-        System.out.println("You have been assigned " + assignedChildren + " child ticket(s).");
-        return assignedChildren;
-    }
-static String askForData(String message){
-        System.out.println(message);
-        return TakeInput.takeNextLine();
-}
-static void test() {}
-//static String feedbackMessage(String message, String variableToOutput){
-//    System.out.println(message + variableToOutput);
-//
-//}
+        System.out.println("You have been assigned " + o.getChildrenCount() + " child ticket(s).");
+        return o.getChildrenCount();
+    } //returns number of children that have been assigned
 
-    static String studentQuestion() {
-        String q = "How many of your party are students?";
-        return q;
-    }
+    private static String studentQuestion() {
+        return "How many of your party are students?";
+    } // returns "how many students?"
 
-    static int studentAnswer() {
-        int requestedStudents = 0;
-        int assignedStudents = 0;
-//        int remainingPrior = remainingSeatingForParty;
-        String tmp = studentQuestion();
-        System.out.println(tmp);
-        requestedStudents = TakeInput.takeNextInt();
+    private static int studentAnswer() {
 
-        if (requestedStudents == 0) {
-            assignedStudents = requestedStudents;
-            remainingSeatingForParty = assignedSeating - assignedStudents;
-        } else if (requestedStudents < assignedSeating - remainingSeatingForParty) {
-            assignedStudents = requestedStudents;
-            remainingSeatingForParty = assignedSeating - assignedStudents;
-        } else if (requestedStudents == assignedSeating - remainingSeatingForParty) {
-            assignedStudents = requestedStudents;
-            remainingSeatingForParty = assignedSeating - remainingSeatingForParty;
-            if (DaySelection.confirmedDay.equalsIgnoreCase("Wednesday")) {
-                totalCosting = "Your total cost will be £" + (4 * assignedStudents) + ".";
-                System.out.println("You have been assigned " + assignedStudents + " student ticket(s).");
-                Greeting.thankEnd();
-            }
-            totalCosting = "Your total cost will be £" + (6 * assignedStudents) + ".";
-            System.out.println("You have been assigned " + assignedStudents + " student ticket(s).");
+        System.out.println(studentQuestion());
+        int requested = TakeInput.takeNextInt();
+
+        if (requested < o.getSeatsRemaining()) {
+            assignReqToAssigned(o, "students", requested);
+            adjustRemainingSeats(o);
+        } else if (requested == o.getSeatsRemaining()) {
+            assignReqToAssigned(o, "students", requested);
+            adjustRemainingSeats(o);
+            o.announceFinalPrice();
             Greeting.thankEnd();
         } else {
-            remainingSeatingForParty = assignedSeating - assignedStudents;
+            adjustRemainingSeats(o);
             overPartySize();
-            requestedStudents = TakeInput.takeNextInt();
+            requested = TakeInput.takeNextInt();
         }
-        System.out.println("You have been assigned " + assignedStudents + " student ticket(s).");
-        return assignedStudents;
-    }
+        System.out.println("You have been assigned " + o.getStudentCount() + " student ticket(s).");
+        return o.getStudentCount();
+    }//returns number of student that have been assigned
 
-    static String elderlyQuestion() {
-        String q = "How many of your party are over 65?";
+    private static String elderlyQuestion() {
+        return "How many of your party are over 65?";
+    } // returns "how many elderly?"
 
-        return q;
-    }
+    private static int elderlyAnswer() {
 
-    public static int priceFinal () {
-        return (children * 4) + (students * 6) + (elderly * 6) + (8 * standardCustomers);
-    }
-    static int elderlyAnswer() {
-        int requestedElderly = 0;
-        int assignedElderly = 0;
-        int remainingPrior = remainingSeatingForParty;
-        String tmp = elderlyQuestion();
-        if (tmp.contains("many")) {
-            System.out.println(tmp);
-            requestedElderly = TakeInput.takeNextInt();
-        }
-        if (requestedElderly == 0) {
-            assignedElderly = requestedElderly;
-            remainingSeatingForParty = remainingPrior - assignedElderly;
-        } else if (requestedElderly < assignedSeating - remainingSeatingForParty) {
-            assignedElderly = requestedElderly;
-            remainingSeatingForParty = remainingPrior - assignedElderly;
-        } else if (requestedElderly == assignedSeating - remainingSeatingForParty) {
-            assignedElderly = requestedElderly;
-            remainingSeatingForParty = remainingPrior - remainingSeatingForParty;
-            if (DaySelection.getConfirmedDay().equalsIgnoreCase("Wednesday")) {
-                totalCosting = "Your total cost will be £" + (4 * assignedElderly) + ".";
-                System.out.println("You have been assigned " + assignedElderly + " elderly ticket(s).");
-                Greeting.thankEnd();
-            }
-            totalCosting = "Your total cost will be £" + (6 * assignedElderly) + ".";
-            System.out.println("You have been assigned " + assignedElderly + " elderly ticket(s).");
+        System.out.println(elderlyQuestion());
+        int requested = TakeInput.takeNextInt();
+
+        if (requested < o.getSeatsRemaining()) {
+            assignReqToAssigned(o, "elderly", requested);
+            adjustRemainingSeats(o);
+        } else if (requested == o.getSeatsRemaining()) {
+            assignReqToAssigned(o, "elderly", requested);
+            adjustRemainingSeats(o);
+            o.announceFinalPrice();
             Greeting.thankEnd();
         } else {
-            remainingSeatingForParty = remainingPrior - assignedElderly;
+            adjustRemainingSeats(o);
             overPartySize();
-            requestedElderly = TakeInput.takeNextInt();
+            requested = TakeInput.takeNextInt();
         }
-        System.out.println("You have been assigned " + assignedElderly + " elderly ticket(s).");
-        return assignedElderly;
-    }
+        System.out.println("You have been assigned " + o.getElderlyCount() + " elderly ticket(s).");
+        return o.getElderlyCount();
+    }//returns number of elderly that have been assigned
 
-
-    static String calculateCost() {
-        int seatsRemaining3 = 0;
-
-        String offerAnswer = partyComposition();
-        int assignedSeats = assignedSeating;
-        if (offerAnswer.equals("Yes")) {
-            int children = childrenAnswer();
-
-            int seatsRemaining = assignedSeats - children;
-            System.out.println(seatsRemaining);
-            if (seatsRemaining > 0) {
-                int students = studentAnswer();
-                int seatsRemaining2 = seatsRemaining - students;
-                if (seatsRemaining2 > 0) {
-                    int elderly = elderlyAnswer();
-                    seatsRemaining3 = seatsRemaining2 - elderly;
-                }
-            }
-            int standardCustomers;
-            standardCustomers = seatsRemaining3;
-
-        } else {
-            standardCustomers = assignedSeating;
+    static String partyConfig() {
+        String offerAnswer = partyAnnouncement();
+        if (offerAnswer.contains("Yes")) {
+            childrenAnswer();
+            studentAnswer();
+            elderlyAnswer();
+            updateStandard(o);
         }
-        System.out.println("end" + seatsRemaining3);
-        String temp = "Your total cost is £" + finalPriceDet();
-        return temp;
-
-
+        updateStandard(o);
+        return o.announceFinalPrice();
     }
 
-
-   static int finalPriceDet(){
-int temp = 0;
-if(DaySelection.getConfirmedDay().equals("Wednesday")){
-   temp = priceFinalWed;
-}else {
-    temp = priceFinal();
-}  return temp;
+    private static void assignReqToAssigned(Order order, String typePl, int requestedNum) {
+        if (typePl.equalsIgnoreCase("children")) {
+            order.addChildren(requestedNum);
+        } else if (typePl.equalsIgnoreCase("students")) {
+            order.addStudent(requestedNum);
+        } else if (typePl.equalsIgnoreCase("elderly")) {
+            order.addElderly(requestedNum);
+        }
     }
 
+    private static void adjustRemainingSeats(Order order) {
+        order.setSeatsRemaining(order.getPartySize() - order.getChildrenCount() -
+                order.getStudentCount() - order.getElderlyCount());
+    }
+
+    private static void updateStandard(Order order) {
+        order.addStandard(order.getSeatsRemaining());
+    }
 
     private static void overPartySize() {
         System.out.println("We're sorry! That number is higher than the available seats!" +
-                "\n There are " + remainingSeatingForParty + " party members available for an offer. Please try again!");
+                "\n There are " + o.getSeatsRemaining() + " party members available for an offer. Please try again!");
     }
 
-
-    public static void partyRequest() {
+    private static void partyRequest() {
         System.out.println("Does anyone in your party qualify for these offers? Please type \"yes\" or \"no\".");
         Customers.listOfPrices();
     }
@@ -286,9 +196,9 @@ if(DaySelection.getConfirmedDay().equals("Wednesday")){
         System.out.println("Sorry, there is not enough seating for a party that size!");
     }
 
-    private void handleTooFew() {
-        System.out.println("We're sorry, we cannot remove a customer because that screening is already empty!");
-    }
+//    private static void handleTooFew() {
+//        System.out.println("We're sorry, we cannot remove a customer because that screening is already empty!");
+//    }
 
     private static void incorrectEntry() {
         System.out.println("We're sorry! We could not recognise that answer, " +

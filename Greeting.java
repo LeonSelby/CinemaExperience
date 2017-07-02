@@ -20,7 +20,6 @@ class Greeting {
     }
 
     static void thankEnd(){
-        System.out.println(PartyDeclaration.totalCosting);
         thankCustomer();
         System.exit(0);
     }
