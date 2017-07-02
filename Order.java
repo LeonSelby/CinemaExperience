@@ -10,11 +10,11 @@ class Order {
     private int studentCount;
     private int elderlyCount;
 
-  int getStandardCount() {
+    int getStandardCount() {
         return standardCount;
     }
 
-  int getChildrenCount() {
+    int getChildrenCount() {
         return childrenCount;
     }
 
@@ -24,6 +24,24 @@ class Order {
 
     int getElderlyCount() {
         return elderlyCount;
+    }
+
+    int getCount(Order order, String type){
+        int temp = 0;
+        if(type.equalsIgnoreCase("children")){
+            temp = order.getChildrenCount();
+        }else if(type.equalsIgnoreCase("students")){
+            temp = order.getStudentCount();
+        }else if(type.equalsIgnoreCase("elderly")){
+            temp = order.getElderlyCount();
+        }else if(type.equalsIgnoreCase("standard")){
+            temp = order.getStandardCount();
+        }else if(type.equalsIgnoreCase("remaining")){
+            temp = order.getSeatsRemaining();
+        }else if(type.equalsIgnoreCase("party")){
+            temp = order.getPartySize();
+        }
+        return temp;
     }
 
     void addChildren(int amount) {
@@ -47,7 +65,7 @@ class Order {
                 studentCount + ", and Elderly: " + elderlyCount + ".";
     }
 
-   private int finalPriceDet() {
+    private int finalPriceDet() {
         int temp;
         if (DaySelection.getConfirmedDay().equals("Wednesday")) {
             temp = priceFinalWed();
@@ -58,6 +76,8 @@ class Order {
     }
 
     private int priceFinal() {
+        System.out.println("Standard: " + standardCount + ", " + "Children: " + childrenCount + ", " + "Student: " +
+                studentCount + ", and Elderly: " + elderlyCount + ".");
         return (childrenCount * 4) + (studentCount * 6) + (elderlyCount * 6) + (8 * standardCount);
     }
 
@@ -65,8 +85,10 @@ class Order {
         return (childrenCount * 2) + (studentCount * 4) + (elderlyCount * 4) + (6 * standardCount);
     }
 
-    String announceFinalPrice(){
-      return "You're total cost for this visit will be £" + finalPriceDet() +".";
+    String announceFinalPrice() {
+        System.out.println("Standard: " + standardCount + ", " + "Children: " + childrenCount + ", " + "Student: " +
+                studentCount + ", and Elderly: " + elderlyCount + ".");
+        return "Your total cost for this visit will be £" + finalPriceDet() + ".";
     }
 
     int getPartySize() {

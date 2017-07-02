@@ -11,15 +11,20 @@ class PartyDeclaration {
         int requestedSeats;
         requestedSeats = TakeInput.askForPartySize();
         int assignedSeats = 0;
-        try {
-            if (requestedSeats <= (screen1.getSeats() - screen1.getCustomers())) {
-                assignedSeats = requestedSeats;
-            } else {
-                TakeInput.handleTooMany();
-                assignedSeats = 0;
+        boolean badInput = true;
+        while (badInput) {
+            try {
+                if ((requestedSeats <= (screen1.getSeats() - screen1.getCustomers()) && (requestedSeats > 0))) {
+                    assignedSeats = requestedSeats;
+                    badInput = false;
+                } else {
+                    TakeInput.handleTooMany();
+                    assignedSeats = 0;
+                    requestedSeats = TakeInput.askForPartySize();
+                }
+            } catch (InputMismatchException ime) {
+                requestedSeats = TakeInput.askForPartySize();
             }
-        } catch (InputMismatchException ime) {
-            requestedSeats = TakeInput.askForPartySize();
         }
         return assignedSeats;
     } //Takes ask and checks if room
@@ -136,10 +141,12 @@ class PartyDeclaration {
     static String partyConfig() {
         String offerAnswer = partyAnnouncement();
         if (offerAnswer.contains("Yes")) {
+            adjustRemainingSeats(o);
             TakeInput.questionOffers(o, "children");
             TakeInput.questionOffers(o, "students");
             TakeInput.questionOffers(o, "elderly");
             updateStandard(o);
+            return o.announceFinalPrice();
         }
         updateStandard(o);
         return o.announceFinalPrice();
