@@ -4,7 +4,7 @@ class MovieScreening {
 
     private int seats = 100, customers = 0;
 
-    public int getSeats() {
+    int getSeats() {
         return seats;
     }
 
@@ -12,7 +12,7 @@ class MovieScreening {
         this.seats = seats;
     }
 
-    public int getCustomers() {
+    int getCustomers() {
         return customers;
     }
 
@@ -26,6 +26,5 @@ class MovieScreening {
 
     MovieScreening(int seats) {
         this.seats = seats;
-        customers = 0;
     }
 }

@@ -8,7 +8,7 @@ class Greeting {
     }
 
     static String thankYou() {
-        return "Thank you for your visit! Enjoy "+ FilmSelection.confirmedFilm +"!";
+        return "Thank you for your visit! Enjoy "+ FilmSelection.getConfirmedFilm();
     }
 
     static void greetCustomer() {

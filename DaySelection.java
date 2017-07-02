@@ -3,30 +3,24 @@ package com.leonselby.test.CinemaExperience;
 
 class DaySelection {
 
-
-    public static String getConfirmedDay() {
-        return confirmedDay;
-    }
-
-    static String confirmedDay;
+    private static String confirmedDay;
 
     static String dayAnnouncement() {
-        askForDay();
+        TakeInput.askForDay();
         Day.listOfDays();
         return dayAnnouncer();
-    }
+    } //Prints list of Days and Q for user, runs dayAnnouncer()
 
     private static String dayAnnouncer() {
-        String tmp = daySelector();
+        daySelector();
         String output = "You have selected " + confirmedDay + ", standard tickets are £8 today.";
         if (confirmedDay.equalsIgnoreCase("wednesday")) {
             output = "You have selected Wednesday, all tickets are £2 off today!";
         }
         return output;
-    }
+    } //Prints to console based on confirmed day (runs daySelector())
 
-    private static String daySelector() {
-
+    private static void daySelector() {
         String selectedDayString = "";
         boolean dayNotAssigned = true;
         while (dayNotAssigned) {
@@ -68,19 +62,15 @@ class DaySelection {
                     break;
                 case "0":
                 default:
-                    incorrectDay();
-                    askForDay();
+                    TakeInput.incorrectDay();
+                    TakeInput.askForDay();
+                    break;
             }
         }
         confirmedDay = selectedDayString;
-        return selectedDayString;
-    }
+    } //Sets confirmedDay
 
-    private static void incorrectDay() {
-        System.out.println("We're sorry! We can not recognise that input, please try again.");
-    }
-
-    private static void askForDay() {
-        System.out.println("Please choose the day of your visit by typing the day or the corresponding number.");
+    static String getConfirmedDay() {
+        return confirmedDay;
     }
 }

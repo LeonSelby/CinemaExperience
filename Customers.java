@@ -10,7 +10,6 @@ public enum Customers {
     public final int originalPrice;
     public final String customerType;
 
-
     Customers(String type, int price) {
         customerType = type;
         originalPrice = price;
